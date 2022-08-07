@@ -1,0 +1,46 @@
+{
+  "language": "python",
+  "app": "pipenv run python main.py",
+  "projectId": "242327cd-51da-4d7b-b695-6662d46c7a9b",
+  "sendCrashReports": "true",
+  "terraformProviders": [
+    "aws@~>4.0"
+  ],
+  "terraformModules": [
+    {
+      "name": "vpc",
+      "source": "terraform-aws-modules/vpc/aws",
+      "version": "3.14.2"
+    },
+    {
+      "name": "secgroup",
+      "source": "terraform-aws-modules/security-group/aws",
+      "version": "4.9.0"
+    },
+    {
+      "name": "s3bucket",
+      "source": "terraform-aws-modules/s3-bucket/aws",
+      "version": "3.3.0"
+    },
+    {
+      "name": "asg",
+      "source": "terraform-aws-modules/autoscaling/aws",
+      "version": "6.5.1"
+    },
+    {
+      "name": "ecscluster",
+      "source": "terraform-aws-modules/ecs/aws",
+      "version": "4.1.1"
+    },
+    {
+      "name": "ecsservice",
+      "source": "lazzurs/ecs-service/aws",
+      "version": "1.0.0"
+    }
+  ],
+  "codeMakerOutput": "imports",
+  "context": {
+    "excludeStackIdFromLogicalIds": "true",
+    "allowSepCharsInLogicalIds": "true"
+  }
+}
