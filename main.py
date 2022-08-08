@@ -4,7 +4,19 @@ from imports.aws import AwsProvider
 from imports.vpc import Vpc
 from imports.secgroup import Secgroup
 from imports.s3bucket import S3Bucket
+from imports.asg import Asg
+from imports.ecscluster import Ecscluster
+import base64
 
+user_data_script='''
+#!/bin/bash
+cat <<'EOF' >> /etc/ecs/ecs.config
+ECS_CLUSTER=cap-ecs
+EOF
+'''[1:-1]
+user_data_script_bytes = user_data_script.encode("ascii")
+user_data_script_base64_bytes = base64.b64encode(user_data_script_bytes)
+user_data_script_base64_string = user_data_script_base64_bytes.decode("ascii")
 
 class Stack(TerraformStack):
     def __init__(self, scope: Construct, ns: str):
@@ -19,7 +31,7 @@ class Stack(TerraformStack):
             public_subnets=["10.0.1.0/24", "10.0.2.0/24"]
             )
 
-        Secgroup(self, 'cap-ecs',
+        cap_secgroup_ecs = Secgroup(self, 'cap-ecs',
             name='cap-ecs',
             description='Security Group for ECS instances',
             vpc_id=Token().as_string(cap_vpc.vpc_id_output),
@@ -42,6 +54,28 @@ class Stack(TerraformStack):
             block_public_policy=True,
             ignore_public_acls=True,
             restrict_public_buckets=True
+            )
+
+        Asg(self, 'cap-asg',
+            name='cap-asg-ecs',
+            vpc_zone_identifier=Token().as_list(cap_vpc.public_subnets_output),
+            security_groups=Token().as_list(cap_secgroup_ecs.security_group_id),
+            user_data = user_data_script_base64_string,
+            ignore_desired_capacity_changes=True,
+            create_iam_instance_profile=True,
+            iam_role_name='ecs-instance',
+            iam_role_policies={
+                "AmazonEC2ContainerServiceforEC2Role": "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
+            },
+            health_check_type='EC2',
+            autoscaling_group_tags={
+                "AmazonECSManaged": 'True'
+            },
+            min_size=1,
+            max_size=1,
+            desired_capacity=1,
+            instance_type="t3a.nano",
+            image_id='ami-040d909ea4e56f8f3'
             )
 
 app = App()

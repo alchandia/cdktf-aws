@@ -84,6 +84,10 @@ Delete all AWS resources
 ```bash
 cdktf destroy
 ```
+## TODO
+
+- Get AMI ID dynamically
+- Improve configuration of user_data
 
 ## Links
 
