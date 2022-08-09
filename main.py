@@ -1,5 +1,5 @@
 from constructs import Construct
-from cdktf import App, TerraformStack, Token
+from cdktf import App, TerraformStack, Token, TerraformOutput
 from imports.aws import AwsProvider
 from imports.vpc import Vpc
 from imports.secgroup import Secgroup
@@ -56,7 +56,7 @@ class Stack(TerraformStack):
             restrict_public_buckets=True
             )
 
-        Asg(self, 'cap-asg',
+        my_asg = Asg(self, 'cap-asg',
             name='cap-asg-ecs',
             vpc_zone_identifier=Token().as_list(cap_vpc.public_subnets_output),
             security_groups=Token().as_list(cap_secgroup_ecs.security_group_id),
@@ -77,6 +77,20 @@ class Stack(TerraformStack):
             instance_type="t3a.nano",
             image_id='ami-040d909ea4e56f8f3'
             )
+
+        Ecscluster(self, 'cap-ecs-cluster',
+            cluster_name='cap-ecs-cluster',
+            default_capacity_provider_use_fargate=False,
+            autoscaling_capacity_providers=dict({
+                "one": dict({
+                    "auto_scaling_group_arn": Token().as_string(my_asg.autoscaling_group_arn_output)
+                })
+            })
+        )
+
+        TerraformOutput(self, 'my_asg_arn',
+            value=Token().as_string(my_asg.autoscaling_group_arn_output)
+        )
 
 app = App()
 Stack(app, "cdktf-aws-python")

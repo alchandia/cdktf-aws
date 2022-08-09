@@ -95,6 +95,7 @@ cdktf destroy
 - https://github.com/hashicorp/terraform-cdk/tree/43ed33370510c31cd62b5f0b07a812197e89d252/examples/python
 - https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws
 - https://registry.terraform.io/modules/terraform-aws-modules/security-group/aws
+- https://registry.terraform.io/modules/terraform-aws-modules/autoscaling/aws
 - https://registry.terraform.io/modules/terraform-aws-modules/ecs/aws
 - https://registry.terraform.io/modules/lazzurs/ecs-service/aws
 - https://github.com/celeguim/cdktf-aws-python/tree/ac02109830b11512f54ee1a6d40a54598ac38ca8
