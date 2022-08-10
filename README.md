@@ -88,6 +88,8 @@ cdktf destroy
 
 - Get AMI ID dynamically
 - Improve configuration of user_data
+- Check error in autoscaling config, secgroup it not being asociated with launch template
+- ECS service is replaced in every deployment, there is some problema with the `default_capacity_provider_strategy` configuration
 
 ## Links
 
