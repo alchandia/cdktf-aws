@@ -2,99 +2,43 @@ from constructs import Construct
 from cdktf import App, TerraformStack, Token, TerraformOutput
 from imports.aws import AwsProvider
 from imports.vpc import Vpc
-from imports.secgroup import Secgroup
-from imports.s3bucket import S3Bucket
-from imports.asg import Asg
 from imports.ecscluster import Ecscluster
 from imports.ecsservice import Ecsservice
-import base64
 
-user_data_script='''
-#!/bin/bash
-cat <<'EOF' >> /etc/ecs/ecs.config
-ECS_CLUSTER=cap-ecs-cluster
-EOF
-'''[1:-1]
-user_data_script_bytes = user_data_script.encode("ascii")
-user_data_script_base64_bytes = base64.b64encode(user_data_script_bytes)
-user_data_script_base64_string = user_data_script_base64_bytes.decode("ascii")
+aws_region='us-east-1'
+ec2_instance_type="t3a.nano"
+id_app="cap"
 
 class Stack(TerraformStack):
     def __init__(self, scope: Construct, ns: str):
         super().__init__(scope, ns)
 
-        AwsProvider(self, 'Aws', region='us-east-1')
+        AwsProvider(self, 'Aws', region=aws_region)
 
-        my_vpc = Vpc(self, 'cap-vpc',
-            name='cap-vpc',
+        my_vpc = Vpc(self, id_app + "-vpc",
+            name=id_app + "-vpc",
             cidr='10.0.0.0/16',
             azs=["us-east-1a", "us-east-1b"],
             public_subnets=["10.0.1.0/24", "10.0.2.0/24"]
         )
 
-        my_secgroup = Secgroup(self, 'cap-ecs',
-            name='cap-ecs',
-            description='Security Group for ECS instances',
+        my_ecscluster = Ecscluster(self, id_app + "-ecs-cluster",
+            region=aws_region,
             vpc_id=Token().as_string(my_vpc.vpc_id_output),
-            ingress_with_cidr_blocks=[
-                {
-                "from_port": "80",
-                "to_port": "80",
-                "protocol": "tcp",
-                "description": "Public HTTP",
-                "cidr_blocks": "0.0.0.0/0"
-                }
-              ]
+            subnet_ids=Token().as_list(my_vpc.public_subnets_output),
+            component="poc",
+            deployment_identifier="web",
+            cluster_name=id_app + "-ecs-cluster",
+            cluster_instance_type=ec2_instance_type,
+            cluster_minimum_size="1",
+            cluster_maximum_size="1",
+            cluster_desired_capacity="1",
+            cluster_instance_root_block_device_type="gp2",
+            associate_public_ip_addresses="yes"
         )
 
-        S3Bucket(self, 'cap-backups',
-            bucket='cap-backups-663423874867',
-            force_destroy=False,
-            acl="private",
-            block_public_acls=True,
-            block_public_policy=True,
-            ignore_public_acls=True,
-            restrict_public_buckets=True
-        )
-
-        my_asg = Asg(self, 'cap-asg',
-            name='cap-asg-ecs',
-            vpc_zone_identifier=Token().as_list(my_vpc.public_subnets_output),
-            security_groups=[Token().as_string(my_secgroup.security_group_id)],
-            user_data = user_data_script_base64_string,
-            ignore_desired_capacity_changes=True,
-            create_iam_instance_profile=True,
-            iam_role_name='ecs-instance',
-            iam_role_policies={
-                "AmazonEC2ContainerServiceforEC2Role": "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
-            },
-            health_check_type='EC2',
-            autoscaling_group_tags={
-                "AmazonECSManaged": 'True'
-            },
-            min_size=1,
-            max_size=1,
-            desired_capacity=1,
-            instance_type="t3a.nano",
-            image_id='ami-040d909ea4e56f8f3'
-        )
-
-        my_ecscluster = Ecscluster(self, 'cap-ecs-cluster',
-            cluster_name='cap-ecs-cluster',
-            default_capacity_provider_use_fargate=False,
-            autoscaling_capacity_providers=dict({
-                "one": dict({
-                    "auto_scaling_group_arn": Token().as_string(my_asg.autoscaling_group_arn_output),
-                    "default_capacity_provider_strategy": dict({
-                        "weight": 60,
-                        "base": 20
-                    })
-                })
-            })
-        )
-
-        Ecsservice(self, 'cap-ecs-service',
-            ecs_cluster_id=Token().as_string(my_ecscluster.cluster_arn_output),
+        Ecsservice(self, id_app + "-ecs-service",
+            ecs_cluster_id=Token().as_string(my_ecscluster.cluster_id_output),
             service_name='nginx',
             image_name='nginx:stable-alpine',
             service_memory=256,
@@ -107,8 +51,8 @@ class Stack(TerraformStack):
             ]
         )
 
-        TerraformOutput(self, 'my_asg_arn',
-            value=Token().as_string(my_asg.autoscaling_group_arn_output)
+        TerraformOutput(self, 'security_group_id_output',
+            value=Token().as_string(my_ecscluster.security_group_id_output)
         )
 
 app = App()

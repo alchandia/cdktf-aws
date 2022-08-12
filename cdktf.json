@@ -13,24 +13,9 @@
       "version": "3.14.2"
     },
     {
-      "name": "secgroup",
-      "source": "terraform-aws-modules/security-group/aws",
-      "version": "4.9.0"
-    },
-    {
-      "name": "s3bucket",
-      "source": "terraform-aws-modules/s3-bucket/aws",
-      "version": "3.3.0"
-    },
-    {
-      "name": "asg",
-      "source": "terraform-aws-modules/autoscaling/aws",
-      "version": "6.5.1"
-    },
-    {
       "name": "ecscluster",
-      "source": "terraform-aws-modules/ecs/aws",
-      "version": "4.1.1"
+      "source": "infrablocks/ecs-cluster/aws",
+      "version": "4.2.0"
     },
     {
       "name": "ecsservice",

@@ -1,6 +1,6 @@
 # CDKTF-AWS
 
-A CDK for Terraform application in Python.
+A CDK for Terraform application in Python that runs a nginx container on AWS ECS.
 
 Some context:
 - Developed in Ubuntu 20.04 LTS
@@ -77,6 +77,7 @@ Run cdktf-cli commands (similar to plan and apply in terraform)
 ```bash
 cdktf diff
 cdktf deploy
+# After deployment, you need to enable manually the port 80 on the security group associated with the ec2 instance
 ```
 
 Delete all AWS resources
@@ -84,20 +85,12 @@ Delete all AWS resources
 ```bash
 cdktf destroy
 ```
-## TODO
-
-- Get AMI ID dynamically
-- Improve configuration of user_data
-- Check error in autoscaling config, secgroup it not being asociated with launch template
-- ECS service is replaced in every deployment, there is some problema with the `default_capacity_provider_strategy` configuration
 
 ## Links
 
 - https://www.terraform.io/cdktf
 - https://github.com/hashicorp/terraform-cdk/tree/43ed33370510c31cd62b5f0b07a812197e89d252/examples/python
 - https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws
-- https://registry.terraform.io/modules/terraform-aws-modules/security-group/aws
-- https://registry.terraform.io/modules/terraform-aws-modules/autoscaling/aws
-- https://registry.terraform.io/modules/terraform-aws-modules/ecs/aws
+- https://registry.terraform.io/modules/infrablocks/ecs-cluster/aws
 - https://registry.terraform.io/modules/lazzurs/ecs-service/aws
 - https://github.com/celeguim/cdktf-aws-python/tree/ac02109830b11512f54ee1a6d40a54598ac38ca8
