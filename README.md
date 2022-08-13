@@ -34,6 +34,7 @@ $ cdktf --version
 Install Pipenv by running:
 
 ```bash
+sudo apt install python3-pip
 sudo pip install pipenv
 ```
 
@@ -41,14 +42,14 @@ sudo pip install pipenv
 
 ```bash
 curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
-sudo apt update
-sudo apt install nodejs
+sudo apt update && \
+    sudo apt install nodejs
 ```
 
 [Install cdktf-cli](https://learn.hashicorp.com/tutorials/terraform/cdktf-install?in=terraform/cdktf)
 
 ```bash
-npm install --global cdktf-cli@0.12.0
+sudo npm install --global cdktf-cli@0.12.0
 ```
 
 ## Usage
@@ -64,14 +65,6 @@ cdktf get
 
 You can now edit the `main.py` file if you want to modify any code.
 
-Compile and generate Terraform configuration
-
-```bash
-cdktf synth
-```
-
-The above command will create a folder called `cdktf.out` that contains all Terraform JSON configuration that was generated.
-
 Run cdktf-cli commands (similar to plan and apply in terraform)
 
 ```bash
@@ -85,6 +78,14 @@ Delete all AWS resources
 ```bash
 cdktf destroy
 ```
+
+Compile and generate Terraform configuration for debugging
+
+```bash
+cdktf synth
+```
+
+The above command will create a folder called `cdktf.out` that contains all Terraform JSON configuration that was generated.
 
 ## Links
 
