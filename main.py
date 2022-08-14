@@ -1,4 +1,3 @@
-from sys import modules
 from cdktf import App
 from class_just_modules import StackJustModules
 from class_just_provider import StackJustProvider

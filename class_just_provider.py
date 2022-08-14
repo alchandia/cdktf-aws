@@ -1,8 +1,10 @@
+import json
 from cdktf import Token, TerraformOutput, TerraformStack
 from constructs import Construct
 from imports.aws import AwsProvider
-from imports.aws.vpc import Vpc, RouteTable, Subnet, InternetGateway, RouteTableAssociation, Route, SecurityGroup, \
-    SecurityGroupIngress, NatGateway, SecurityGroupEgress, NetworkAcl, NetworkAclIngress, NetworkAclEgress
+from imports.aws.vpc import Vpc, RouteTable, Subnet, InternetGateway, RouteTableAssociation, Route
+from imports.aws.iam import IamRole, IamInstanceProfile
+from imports.aws.ecs import EcsCluster
 
 aws_region='us-east-1'
 id_app="jp"
@@ -14,6 +16,9 @@ class StackJustProvider(TerraformStack):
 
         AwsProvider(self, 'Aws', region=aws_region)
 
+        #
+        # VPC
+        #
         vpc = Vpc(
             self, "vpc",
             cidr_block="10.0.0.0/16",
@@ -53,4 +58,33 @@ class StackJustProvider(TerraformStack):
             route_table_id=route_table.id, 
             gateway_id=igw.id,
             destination_cidr_block='0.0.0.0/0'
+        )
+
+        #
+        # ECSCluster
+        #
+        ec2_role = IamRole(
+            self, 'ec2_role',
+            name=id_app + "-ec2role-ecscluster",
+            path="/",
+            assume_role_policy=json.dumps({
+                "Version": "2012-10-17",
+                "Statement": [{
+                    "Effect": "Allow",
+                    "Action": "sts:AssumeRole",
+                    "Principal": {
+                        "Service": "ec2.amazonaws.com"
+                    }
+                }]
+            }),
+            managed_policy_arns=["arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"]
+        )
+        IamInstanceProfile(
+            self, 'ec2_instance_profile',
+            name=id_app + "-ec2_instance_profile_ecscluster",
+            role=ec2_role.name
+        )
+        EcsCluster(
+            self, 'ecs_cluster',
+            name=id_app + "-cluster",
         )
