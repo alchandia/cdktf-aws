@@ -4,7 +4,8 @@ A CDK for Terraform application in Python that runs a nginx container on AWS ECS
 
 Some context:
 - Developed in Ubuntu 20.04 LTS
-- Depend only of public modules found in [registry.terraform.io](https://registry.terraform.io/)
+- Stack just_modules create resources using public modules found in [registry.terraform.io](https://registry.terraform.io/)
+- Stack just_provider create resources using only the provider, without external dependencies
 
 ## Software prerequisites
 
@@ -56,6 +57,11 @@ sudo npm install --global cdktf-cli@0.12.0
 
 Create/Update AWS credencials in `~/.aws/credentials`
 
+Install python dependencies
+```bash
+pipenv sync
+```
+
 Generate CDK for Terraform constructs for Terraform providers and modules used in the project.
 
 ```bash
@@ -63,20 +69,20 @@ Generate CDK for Terraform constructs for Terraform providers and modules used i
 cdktf get
 ```
 
-You can now edit the `main.py` file if you want to modify any code.
+You can now edit the python files if you want to modify any code.
 
 Run cdktf-cli commands (similar to plan and apply in terraform)
 
 ```bash
-cdktf diff
-cdktf deploy
+cdktf diff [just_modules|just_provider]
+cdktf deploy [just_modules|just_provider]
 # After deployment, you need to enable manually the port 80 on the security group associated with the ec2 instance
 ```
 
 Delete all AWS resources
 
 ```bash
-cdktf destroy
+cdktf destroy [just_modules|just_provider]
 ```
 
 Compile and generate Terraform configuration for debugging
