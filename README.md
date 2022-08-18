@@ -17,7 +17,7 @@ $ pipenv --version
 pipenv, version 2022.8.5
 
 $ npm --version
-6.14.17
+8.15.0
 
 $ aws --version
 aws-cli/2.7.13 Python/3.9.11 Linux/5.15.0-43-generic exe/x86_64.ubuntu.20 prompt/off
@@ -35,27 +35,32 @@ $ cdktf --version
 Install Pipenv by running:
 
 ```bash
-sudo apt install python3-pip
 sudo pip install pipenv
-```
-
-[Installing Node.js and npm from NodeSource](https://linuxize.com/post/how-to-install-node-js-on-ubuntu-20-04/)
-
-```bash
-curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
-sudo apt update && \
-    sudo apt install nodejs
 ```
 
 [Install cdktf-cli](https://learn.hashicorp.com/tutorials/terraform/cdktf-install?in=terraform/cdktf)
 
 ```bash
-sudo npm install --global cdktf-cli@0.12.0
+npm install --global cdktf-cli@0.12.0
 ```
 
 ## Usage
 
-Create/Update AWS credencials in `~/.aws/credentials`
+Create/update AWS credencials in `~/.aws/credentials`
+
+If youn are using [tfenv](https://github.com/tfutils/tfenv), set version of Terraform to use
+
+```bash
+tfenv use v1.2.3
+```
+
+If you are using [nvm](https://github.com/nvm-sh/nvm), set version of node to use
+
+```bash
+nvm use v16.17.0
+```
+
+Next commands need to be run from working copy of project
 
 Install python dependencies
 ```bash
@@ -76,7 +81,8 @@ Run cdktf-cli commands (similar to plan and apply in terraform)
 ```bash
 cdktf diff [just_modules|just_provider]
 cdktf deploy [just_modules|just_provider]
-# After deployment, you need to enable manually the port 80 on the security group associated with the ec2 instance
+# When using the just_modules stack, you need to enable manually the port 80
+# on the security group associated with the ec2 instance after deployment
 ```
 
 Delete all AWS resources
