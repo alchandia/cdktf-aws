@@ -67,12 +67,14 @@ Install python dependencies
 pipenv sync
 ```
 
-Generate CDK for Terraform constructs for Terraform providers and modules used in the project.
+Generate CDK constructs for Terraform providers and modules used in the project.
 
 ```bash
 # this command take several minutes to finish
 cdktf get
 ```
+
+***TODO***: use [prebuilt provider](https://www.terraform.io/cdktf/concepts/providers) to short development time
 
 You can now edit the python files if you want to modify any code.
 
