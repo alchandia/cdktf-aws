@@ -6,7 +6,7 @@ from imports.ecscluster import Ecscluster
 from imports.ecsservice import Ecsservice
 
 aws_region='us-east-1'
-ec2_instance_type="t3a.nano"
+ec2_instance_type="t2.micro"
 id_app="jm"
 
 class StackJustModules(TerraformStack):
@@ -42,7 +42,7 @@ class StackJustModules(TerraformStack):
             ecs_cluster_id=Token().as_string(my_ecscluster.cluster_id_output),
             service_name='nginx',
             image_name='nginx:stable-alpine',
-            service_memory=256,
+            service_memory=128,
             port_mappings=[
                 {
                 "containerPort": 80,

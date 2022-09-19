@@ -1,11 +1,11 @@
 # CDKTF-AWS
 
-A CDK for Terraform application in Python that runs a nginx container on AWS ECS.
+A CDK for Terraform application in Python that runs a nginx container on AWS ECS using a EC2 instance.
 
 Some context:
 - Developed in Ubuntu 20.04 LTS
-- Stack just_modules create resources using public modules found in [registry.terraform.io](https://registry.terraform.io/)
-- Stack just_provider create resources using only the provider, without external dependencies
+- Stack `just_modules` create resources using public modules found in [registry.terraform.io](https://registry.terraform.io/)
+- Stack `just_provider` create resources using the provider classes, without external modules.
 
 ## Software prerequisites
 
@@ -69,12 +69,12 @@ pipenv sync
 
 Generate CDK constructs for Terraform providers and modules used in the project.
 
+***this command take several minutes to finish***
 ```bash
-# this command take several minutes to finish
 cdktf get
 ```
 
-***TODO***: use [prebuilt provider](https://www.terraform.io/cdktf/concepts/providers) to short development time
+***TODO***: use [prebuilt provider](https://www.terraform.io/cdktf/concepts/providers#install-pre-built-providers) to short development time
 
 You can now edit the python files if you want to modify any code.
 
@@ -83,9 +83,11 @@ Run cdktf-cli commands (similar to plan and apply in terraform)
 ```bash
 cdktf diff [just_modules|just_provider]
 cdktf deploy [just_modules|just_provider]
-# When using the just_modules stack, you need to enable manually the port 80
-# on the security group associated with the ec2 instance after deployment
 ```
+
+After deploy the `just_modules` stack, you need to enable manually the port 80 on the security group associated with the ec2 instance and get the EIP assigned to the instance to access nginx via browser.
+
+After deploy the `just_provider` stack, you can copy the EIP from the output to access nginx via browser.
 
 Delete all AWS resources
 
@@ -114,7 +116,3 @@ The above command will create a folder called `cdktf.out` that contains all Terr
 ## Tips
 
 - To find the import that is needed, search the name of the Terraform resource in the imports directory
-
-## TODO
-
-- Use lifecycle option in resources

@@ -9,9 +9,12 @@ from imports.aws.ecs import EcsCluster
 from imports.aws.datasources import LaunchConfiguration
 from imports.aws.autoscaling import AutoscalingGroup
 from imports.aws.ecs import EcsTaskDefinition, EcsService
+from imports.aws.ec2 import DataAwsInstance
+from imports.aws.ssm import DataAwsSsmParameter
 
 aws_region='us-east-1'
 id_app="cdktf-jp"
+ec2_instance_type="t2.micro"
 
 user_data_script = '''
 #!/bin/bash
@@ -25,7 +28,7 @@ container_definition = '''
 [{
   "Name": "nginx",
   "Image": "nginx:stable-alpine",
-  "Memory": 256,
+  "Memory": 128,
   "Essential": true,
   "PortMappings": [
     {
@@ -149,12 +152,15 @@ class StackJustProvider(TerraformStack):
             self, 'ecs_cluster',
             name=id_app + "-cluster",
         )
-
+        ami = DataAwsSsmParameter(
+            self, "ami_id",
+            name="/aws/service/ecs/optimized-ami/amazon-linux-2/recommended/image_id"
+        )
         lc_ecs = LaunchConfiguration(
             self, "launch_template",
             name_prefix=id_app + "-",
-            image_id="ami-03f8a7b55051ae0d4",
-            instance_type="t3a.micro",
+            image_id=ami.value,
+            instance_type=ec2_instance_type,
             iam_instance_profile=ec2_profile.id,
             security_groups=[secgroup_ecs.id],
             root_block_device={
@@ -163,12 +169,11 @@ class StackJustProvider(TerraformStack):
                 "delete_on_termination": True
             },
             user_data=tm.render(cluster_name=id_app + "-cluster"),
-            #lifecycle={
-            #    "create_before_destroy": True
-            #}
+            lifecycle={
+               "create_before_destroy": True
+            }
         )
-
-        AutoscalingGroup(
+        ecs_asg = AutoscalingGroup(
             self, "asg",
             name=id_app + "-asg",
             launch_configuration=lc_ecs.name,
@@ -177,11 +182,20 @@ class StackJustProvider(TerraformStack):
             desired_capacity=1,
             vpc_zone_identifier=[
                 public_subnet.id
-            ]
-            #lifecycle={
-            #    "create_before_destroy": True
-            #    "ignore_changes"=["min_size", "max_size", "desired_capacity"]
-            #}
+            ],
+            tag=[{
+                "key": "Name",
+                "value": id_app,
+                "propagateAtLaunch": True
+            }],
+            lifecycle={
+               "create_before_destroy": True,
+               "ignore_changes": [
+                    "min_size",
+                    "max_size",
+                    "desired_capacity"
+                ]
+            }
         )
 
         #
@@ -193,7 +207,6 @@ class StackJustProvider(TerraformStack):
             container_definitions=container_definition,
             network_mode="bridge"
         )
-
         EcsService(
             self, "escser",
             name=id_app,
@@ -201,7 +214,23 @@ class StackJustProvider(TerraformStack):
             task_definition=task_def.arn,
             desired_count=1,
             deployment_minimum_healthy_percent=0,
-            #lifecycle={
-            #    "ignore_changes"=["desired_count"]
-            #}            
+            lifecycle={
+               "ignore_changes": ["desired_count"]
+            }
+        )
+
+        #
+        # Outputs
+        #
+        data_ec2 = DataAwsInstance(
+            self, "data_ec2",
+            filter=[{
+                "name": "tag:Name",
+                "values": [id_app]
+            }],
+            depends_on=[ecs_asg]
+        )
+        TerraformOutput(
+            self, 'ec2_eip',
+            value=Token().as_string(data_ec2.public_ip)
         )
