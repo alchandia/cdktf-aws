@@ -8,6 +8,7 @@ from imports.aws.iam import IamRole, IamInstanceProfile
 from imports.aws.ecs import EcsCluster
 from imports.aws.datasources import LaunchConfiguration
 from imports.aws.autoscaling import AutoscalingGroup
+from imports.aws.ecs import EcsTaskDefinition, EcsService
 
 aws_region='us-east-1'
 id_app="cdktf-jp"
@@ -19,6 +20,21 @@ echo "*** Put ECS config in place"
 echo "ECS_CLUSTER={{ cluster_name }}" > /etc/ecs/ecs.config
 '''
 tm = Template(user_data_script)
+
+container_definition = '''
+[{
+  "Name": "nginx",
+  "Image": "nginx:stable-alpine",
+  "Memory": 256,
+  "Essential": true,
+  "PortMappings": [
+    {
+        "ContainerPort": 80,
+        "HostPort": 80
+    }
+  ]
+}]
+'''
 
 class StackJustProvider(TerraformStack):
 
@@ -106,7 +122,7 @@ class StackJustProvider(TerraformStack):
         )
 
         #
-        # ECSCluster
+        # ECS-Cluster
         #
         ec2_role = IamRole(
             self, 'ec2_role',
@@ -129,7 +145,7 @@ class StackJustProvider(TerraformStack):
             name=id_app + "-ec2_instance_profile_ecscluster",
             role=ec2_role.name
         )
-        EcsCluster(
+        ecs_cluster = EcsCluster(
             self, 'ecs_cluster',
             name=id_app + "-cluster",
         )
@@ -166,4 +182,26 @@ class StackJustProvider(TerraformStack):
             #    "create_before_destroy": True
             #    "ignore_changes"=["min_size", "max_size", "desired_capacity"]
             #}
+        )
+
+        #
+        # ECS-Service
+        #
+        task_def = EcsTaskDefinition(
+            self, "taskdef",
+            family=id_app,
+            container_definitions=container_definition,
+            network_mode="bridge"
+        )
+
+        EcsService(
+            self, "escser",
+            name=id_app,
+            cluster=ecs_cluster.arn,
+            task_definition=task_def.arn,
+            desired_count=1,
+            deployment_minimum_healthy_percent=0,
+            #lifecycle={
+            #    "ignore_changes"=["desired_count"]
+            #}            
         )
