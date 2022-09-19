@@ -14,20 +14,20 @@ $ python --version
 Python 3.8.10
 
 $ pipenv --version
-pipenv, version 2022.8.5
+pipenv, version 2022.8.13
 
 $ npm --version
 8.15.0
 
 $ aws --version
-aws-cli/2.7.13 Python/3.9.11 Linux/5.15.0-43-generic exe/x86_64.ubuntu.20 prompt/off
+aws-cli/2.7.22 Python/3.9.11 Linux/5.15.0-46-generic exe/x86_64.ubuntu.20 prompt/off
 
 $ terraform --version
-Terraform v1.2.3
+Terraform v1.2.9
 on linux_amd64
 
 $ cdktf --version
-0.12.0
+0.12.2
 ```
 
 ## Install prerequisites
@@ -41,7 +41,7 @@ sudo pip install pipenv
 [Install cdktf-cli](https://learn.hashicorp.com/tutorials/terraform/cdktf-install?in=terraform/cdktf)
 
 ```bash
-npm install --global cdktf-cli@0.12.0
+npm install --global cdktf-cli@0.12.2
 ```
 
 ## Usage
@@ -51,7 +51,7 @@ Create/update AWS credencials in `~/.aws/credentials`
 If youn are using [tfenv](https://github.com/tfutils/tfenv), set version of Terraform to use
 
 ```bash
-tfenv use v1.2.3
+tfenv use v1.2.9
 ```
 
 If you are using [nvm](https://github.com/nvm-sh/nvm), set version of node to use
