@@ -109,3 +109,13 @@ The above command will create a folder called `cdktf.out` that contains all Terr
 - https://registry.terraform.io/modules/infrablocks/ecs-cluster/aws
 - https://registry.terraform.io/modules/lazzurs/ecs-service/aws
 - https://github.com/celeguim/cdktf-aws-python/tree/ac02109830b11512f54ee1a6d40a54598ac38ca8
+
+
+## Tips
+
+- To find the import that is needed, search the name of the Terraform resource in the imports directory
+
+## TODO
+
+- Use jinja2 to load the user_data script
+- Use lifecycle option in resources
