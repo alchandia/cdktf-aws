@@ -1,6 +1,7 @@
 import json
 from cdktf import Token, TerraformOutput, TerraformStack
 from constructs import Construct
+from jinja2 import Template
 from imports.aws import AwsProvider
 from imports.aws.vpc import Vpc, RouteTable, Subnet, InternetGateway, RouteTableAssociation, Route, SecurityGroup, SecurityGroupRule
 from imports.aws.iam import IamRole, IamInstanceProfile
@@ -9,7 +10,15 @@ from imports.aws.datasources import LaunchConfiguration
 from imports.aws.autoscaling import AutoscalingGroup
 
 aws_region='us-east-1'
-id_app="jp"
+id_app="cdktf-jp"
+
+user_data_script = '''
+#!/bin/bash
+
+echo "*** Put ECS config in place"
+echo "ECS_CLUSTER={{ cluster_name }}" > /etc/ecs/ecs.config
+'''
+tm = Template(user_data_script)
 
 class StackJustProvider(TerraformStack):
 
@@ -125,7 +134,6 @@ class StackJustProvider(TerraformStack):
             name=id_app + "-cluster",
         )
 
-        f = open("bootstrap.sh", "r")
         lc_ecs = LaunchConfiguration(
             self, "launch_template",
             name_prefix=id_app + "-",
@@ -138,12 +146,11 @@ class StackJustProvider(TerraformStack):
                 "volume_size": 30,
                 "delete_on_termination": True
             },
-            user_data=f.read(),
+            user_data=tm.render(cluster_name=id_app + "-cluster"),
             #lifecycle={
             #    "create_before_destroy": True
             #}
         )
-        f.close()
 
         AutoscalingGroup(
             self, "asg",

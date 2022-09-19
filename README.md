@@ -117,5 +117,4 @@ The above command will create a folder called `cdktf.out` that contains all Terr
 
 ## TODO
 
-- Use jinja2 to load the user_data script
 - Use lifecycle option in resources
