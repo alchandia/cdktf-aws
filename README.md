@@ -14,20 +14,20 @@ $ python --version
 Python 3.8.10
 
 $ pipenv --version
-pipenv, version 2022.8.13
+pipenv, version 2022.12.19
 
 $ npm --version
-8.15.0
+8.19.2
 
 $ aws --version
-aws-cli/2.7.22 Python/3.9.11 Linux/5.15.0-46-generic exe/x86_64.ubuntu.20 prompt/off
+aws-cli/2.9.10 Python/3.9.11 Linux/5.15.79.1-microsoft-standard-WSL2 exe/x86_64.ubuntu.20 prompt/off
 
 $ terraform --version
-Terraform v1.2.9
+Terraform v1.3.2
 on linux_amd64
 
 $ cdktf --version
-0.12.2
+0.14.3
 ```
 
 ## Install prerequisites
@@ -35,13 +35,24 @@ $ cdktf --version
 Install Pipenv by running:
 
 ```bash
+sudo apt install python3-pip
 sudo pip install pipenv
+```
+
+Install Node Version Manager (NVM)
+
+https://github.com/nvm-sh/nvm/blob/master/README.md#installing-and-updating
+
+Install latest LTS NodeJS
+
+```
+nvm install --lts
 ```
 
 [Install cdktf-cli](https://learn.hashicorp.com/tutorials/terraform/cdktf-install?in=terraform/cdktf)
 
 ```bash
-npm install --global cdktf-cli@0.12.2
+npm install --global cdktf-cli@0.14.3
 ```
 
 ## Usage
@@ -51,13 +62,13 @@ Create/update AWS credencials in `~/.aws/credentials`
 If youn are using [tfenv](https://github.com/tfutils/tfenv), set version of Terraform to use
 
 ```bash
-tfenv use v1.2.9
+tfenv use v1.3.2
 ```
 
 If you are using [nvm](https://github.com/nvm-sh/nvm), set version of node to use
 
 ```bash
-nvm use v16.17.0
+nvm use v18.12.1
 ```
 
 Next commands need to be run from working copy of project
@@ -67,21 +78,17 @@ Install python dependencies
 pipenv sync
 ```
 
-Generate CDK constructs for Terraform providers and modules used in the project.
+Get Terraform modules used in the `just_modules` stack.
 
-***this command take several minutes to finish***
 ```bash
 cdktf get
 ```
-
-***TODO***: use [prebuilt provider](https://www.terraform.io/cdktf/concepts/providers#install-pre-built-providers) to short development time
 
 You can now edit the python files if you want to modify any code.
 
 Run cdktf-cli commands (similar to plan and apply in terraform)
 
 ```bash
-cdktf diff [just_modules|just_provider]
 cdktf deploy [just_modules|just_provider]
 ```
 
@@ -106,12 +113,12 @@ The above command will create a folder called `cdktf.out` that contains all Terr
 ## Links
 
 - https://www.terraform.io/cdktf
-- https://github.com/hashicorp/terraform-cdk/tree/43ed33370510c31cd62b5f0b07a812197e89d252/examples/python
+- https://developer.hashicorp.com/terraform/tutorials/cdktf/cdktf-build
+- https://github.com/hashicorp/terraform-cdk/tree/524d63fb09b9fb9244d588018fb6267011c41cf0/examples/python/aws
 - https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws
 - https://registry.terraform.io/modules/infrablocks/ecs-cluster/aws
 - https://registry.terraform.io/modules/lazzurs/ecs-service/aws
 - https://github.com/celeguim/cdktf-aws-python/tree/ac02109830b11512f54ee1a6d40a54598ac38ca8
-
 
 ## Tips
 

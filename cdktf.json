@@ -3,9 +3,7 @@
   "app": "pipenv run python main.py",
   "projectId": "242327cd-51da-4d7b-b695-6662d46c7a9b",
   "sendCrashReports": "true",
-  "terraformProviders": [
-    "aws@4.25.0"
-  ],
+  "terraformProviders": [],
   "terraformModules": [
     {
       "name": "vpc",

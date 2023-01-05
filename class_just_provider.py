@@ -2,15 +2,24 @@ import json
 from cdktf import Token, TerraformOutput, TerraformStack
 from constructs import Construct
 from jinja2 import Template
-from imports.aws import AwsProvider
-from imports.aws.vpc import Vpc, RouteTable, Subnet, InternetGateway, RouteTableAssociation, Route, SecurityGroup, SecurityGroupRule
-from imports.aws.iam import IamRole, IamInstanceProfile
-from imports.aws.ecs import EcsCluster
-from imports.aws.datasources import LaunchConfiguration
-from imports.aws.autoscaling import AutoscalingGroup
-from imports.aws.ecs import EcsTaskDefinition, EcsService
-from imports.aws.ec2 import DataAwsInstance
-from imports.aws.ssm import DataAwsSsmParameter
+from cdktf_cdktf_provider_aws.provider import AwsProvider
+from cdktf_cdktf_provider_aws.vpc import Vpc
+from cdktf_cdktf_provider_aws.route_table import RouteTable
+from cdktf_cdktf_provider_aws.subnet import Subnet
+from cdktf_cdktf_provider_aws.internet_gateway import InternetGateway
+from cdktf_cdktf_provider_aws.route_table_association import RouteTableAssociation
+from cdktf_cdktf_provider_aws.route import Route
+from cdktf_cdktf_provider_aws.security_group import SecurityGroup
+from cdktf_cdktf_provider_aws.security_group_rule import SecurityGroupRule
+from cdktf_cdktf_provider_aws.iam_role import IamRole
+from cdktf_cdktf_provider_aws.iam_instance_profile import IamInstanceProfile
+from cdktf_cdktf_provider_aws.ecs_cluster import EcsCluster
+from cdktf_cdktf_provider_aws.ecs_task_definition import EcsTaskDefinition
+from cdktf_cdktf_provider_aws.ecs_service import EcsService
+from cdktf_cdktf_provider_aws.launch_configuration import LaunchConfiguration
+from cdktf_cdktf_provider_aws.autoscaling_group import AutoscalingGroup
+from cdktf_cdktf_provider_aws.data_aws_instance import DataAwsInstance
+from cdktf_cdktf_provider_aws.data_aws_ssm_parameter import DataAwsSsmParameter
 
 aws_region='us-east-1'
 id_app="cdktf-jp"

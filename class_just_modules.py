@@ -1,6 +1,6 @@
 from cdktf import Token, TerraformOutput, TerraformStack
 from constructs import Construct
-from imports.aws import AwsProvider
+from cdktf_cdktf_provider_aws.provider import AwsProvider
 from imports.vpc import Vpc
 from imports.ecscluster import Ecscluster
 from imports.ecsservice import Ecsservice
