@@ -3,27 +3,27 @@
 A CDK for Terraform application in Python that runs a nginx container on AWS ECS using a EC2 instance.
 
 Some context:
-- Developed in Ubuntu 20.04 LTS
-- Stack `just_modules` create resources using public modules found in [registry.terraform.io](https://registry.terraform.io/)
+- Developed in Windows 11 using WSL and Ubuntu 22.04 LTS. I use VSCode with extension Dev Containers.
+- Stack `just_modules` create resources using public modules found in [registry.terraform.io](https://registry.terraform.io/).
 - Stack `just_provider` create resources using the provider classes, without external modules.
 
 ## Software prerequisites
 
 ```bash
-$ python --version
-Python 3.8.10
+$ python3 --version
+Python 3.10.12
 
 $ pipenv --version
-pipenv, version 2022.12.19
+pipenv, version 2023.9.8
 
 $ npm --version
-8.19.2
+9.8.1
 
 $ aws --version
-aws-cli/2.9.10 Python/3.9.11 Linux/5.15.79.1-microsoft-standard-WSL2 exe/x86_64.ubuntu.20 prompt/off
+aws-cli/2.13.21 Python/3.11.5 Linux/5.15.90.1-microsoft-standard-WSL2 exe/x86_64.ubuntu.22 prompt/off
 
 $ terraform --version
-Terraform v1.3.2
+Terraform v1.5.0
 on linux_amd64
 
 $ cdktf --version
@@ -32,48 +32,14 @@ $ cdktf --version
 
 ## Install prerequisites
 
-Install Pipenv by running:
-
-```bash
-sudo apt install python3-pip
-sudo pip install pipenv
-```
-
-Install Node Version Manager (NVM)
-
-https://github.com/nvm-sh/nvm/blob/master/README.md#installing-and-updating
-
-Install latest LTS NodeJS
-
-```
-nvm install --lts
-```
-
-[Install cdktf-cli](https://learn.hashicorp.com/tutorials/terraform/cdktf-install?in=terraform/cdktf)
-
-```bash
-npm install --global cdktf-cli@0.14.3
-```
+All prerequisites are installed using Dev Containers. All the commands need to be run from inside the container, you can use the terminal provided by VSCode to do so.
 
 ## Usage
 
 Create/update AWS credencials in `~/.aws/credentials`
 
-If youn are using [tfenv](https://github.com/tfutils/tfenv), set version of Terraform to use
+Install Python dependencies
 
-```bash
-tfenv use v1.3.2
-```
-
-If you are using [nvm](https://github.com/nvm-sh/nvm), set version of node to use
-
-```bash
-nvm use v18.12.1
-```
-
-Next commands need to be run from working copy of project
-
-Install python dependencies
 ```bash
 pipenv sync
 ```
@@ -89,6 +55,7 @@ You can now edit the python files if you want to modify any code.
 Run cdktf-cli commands (similar to plan and apply in terraform)
 
 ```bash
+cdktf plan [just_modules|just_provider]
 cdktf deploy [just_modules|just_provider]
 ```
 
@@ -110,15 +77,21 @@ cdktf synth
 
 The above command will create a folder called `cdktf.out` that contains all Terraform JSON configuration that was generated.
 
+## Update prerequisites
+
+To update modules used in the `just_modules` stack you need to update `cdktf.json` file and run `cdktf get`
+
+To update CDKTF and AWS provider you need to update `Pipfile`, after that, you need to delete `Pipfile.lock` and run `pipenv lock` and finally `pipenv sync`
+
 ## Links
 
-- https://www.terraform.io/cdktf
-- https://developer.hashicorp.com/terraform/tutorials/cdktf/cdktf-build
-- https://github.com/hashicorp/terraform-cdk/tree/524d63fb09b9fb9244d588018fb6267011c41cf0/examples/python/aws
-- https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws
-- https://registry.terraform.io/modules/infrablocks/ecs-cluster/aws
-- https://registry.terraform.io/modules/lazzurs/ecs-service/aws
-- https://github.com/celeguim/cdktf-aws-python/tree/ac02109830b11512f54ee1a6d40a54598ac38ca8
+- [CDK for Terraform](https://www.terraform.io/cdktf)
+- [Build AWS infrastructure with CDK for Terraform using Python](https://developer.hashicorp.com/terraform/tutorials/cdktf/cdktf-build)
+- [Official sample CDKTF + AWS + Python](https://github.com/hashicorp/terraform-cdk/tree/524d63fb09b9fb9244d588018fb6267011c41cf0/examples/python/aws)
+- [Other sample CDKTF + AWS + Python](https://github.com/celeguim/cdktf-aws-python/tree/ac02109830b11512f54ee1a6d40a54598ac38ca8)
+- [Using Dev Containers in WSL 2](https://code.visualstudio.com/blogs/2020/07/01/containers-wsl)
+- [Create a Dev Container](https://code.visualstudio.com/docs/devcontainers/create-dev-container)
+- [Fix error NVM on Dockerfile](https://stackoverflow.com/a/28390848)
 
 ## Tips
 
