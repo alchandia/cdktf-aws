@@ -7,7 +7,7 @@ verify_ssl = true
 python_version = "3"
 
 [packages]
-cdktf = "~=0.14.3"
+cdktf = "==0.18.0"
 pytest = "*"
 jinja2 = "==3.1.2"
-cdktf-cdktf-provider-aws = "~=11.0.8"
+cdktf-cdktf-provider-aws = "==17.0.6"
