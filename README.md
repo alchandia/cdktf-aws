@@ -55,8 +55,8 @@ You can now edit the python files if you want to modify any code.
 Run cdktf-cli commands (similar to plan and apply in terraform)
 
 ```bash
-cdktf plan [just_modules|just_provider]
-cdktf deploy [just_modules|just_provider]
+cdktf plan
+cdktf deploy
 ```
 
 After deploy the `just_modules` stack, you need to enable manually the port 80 on the security group associated with the ec2 instance and get the EIP assigned to the instance to access nginx via browser.
@@ -66,7 +66,7 @@ After deploy the `just_provider` stack, you can copy the EIP from the output to 
 Delete all AWS resources
 
 ```bash
-cdktf destroy [just_modules|just_provider]
+cdktf destroy
 ```
 
 Compile and generate Terraform configuration for debugging

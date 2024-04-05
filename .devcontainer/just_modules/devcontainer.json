@@ -1,0 +1,6 @@
+{
+    "name": "Just Modules",
+    "dockerComposeFile": ["../docker-compose.yml"],
+    "service": "casc",
+    "workspaceFolder": "/workspace/just_modules"
+}

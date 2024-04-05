@@ -1,5 +1,5 @@
 dist/
-imports/*
+imports
 !imports/__init__.py
 .terraform
 cdktf.out

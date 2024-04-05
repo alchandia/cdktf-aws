@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  casc:
+    image: alchandia/casc
+    volumes:
+      - ../src:/workspace
+    hostname: casc
+    build:
+      context: .
+      dockerfile: Dockerfile

@@ -1,0 +1,6 @@
+{
+    "name": "Just Provider",
+    "dockerComposeFile": ["../docker-compose.yml"],
+    "service": "casc",
+    "workspaceFolder": "/workspace/just_provider"
+}

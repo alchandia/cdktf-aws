@@ -1,4 +1,4 @@
-from cdktf import Token, TerraformOutput, TerraformStack
+from cdktf import Token, TerraformOutput, TerraformStack, App
 from constructs import Construct
 from cdktf_cdktf_provider_aws.provider import AwsProvider
 from imports.vpc import Vpc
@@ -55,3 +55,7 @@ class StackJustModules(TerraformStack):
         TerraformOutput(self, 'security_group_id_output',
             value=Token().as_string(my_ecscluster.security_group_id_output)
         )
+
+app = App()
+StackJustModules(app, "just_modules")
+app.synth()

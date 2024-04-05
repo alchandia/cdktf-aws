@@ -1,5 +1,5 @@
 import json
-from cdktf import Token, TerraformOutput, TerraformStack
+from cdktf import Token, TerraformOutput, TerraformStack, App
 from constructs import Construct
 from jinja2 import Template
 from cdktf_cdktf_provider_aws.provider import AwsProvider
@@ -243,3 +243,7 @@ class StackJustProvider(TerraformStack):
             self, 'ec2_eip',
             value=Token().as_string(data_ec2.public_ip)
         )
+
+app = App()
+StackJustProvider(app, "just_provider")
+app.synth()

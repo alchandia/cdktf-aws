@@ -13,6 +13,8 @@ RUN \
     python3-pip \
     curl \
     git \
+    build-essential \
+    nano \
     unzip && \
   apt clean && \
   apt autoremove --purge
@@ -45,3 +47,6 @@ RUN \
  nvm install --lts && \
  nvm use --lts && \
  npm install --global cdktf-cli@${CDKTF_VERSION}
+
+COPY --chmod=755 start.sh /home/user/start.sh
+CMD /home/user/start.sh
