@@ -34,8 +34,8 @@ class StackJustModules(TerraformStack):
             cluster_minimum_size="1",
             cluster_maximum_size="1",
             cluster_desired_capacity="1",
-            cluster_instance_root_block_device_type="gp2",
-            associate_public_ip_addresses="yes"
+            cluster_instance_root_block_device_type="gp3",
+            associate_public_ip_addresses="true"
         )
 
         Ecsservice(self, id_app + "-ecs-service",

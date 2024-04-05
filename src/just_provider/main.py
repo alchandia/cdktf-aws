@@ -173,7 +173,7 @@ class StackJustProvider(TerraformStack):
             iam_instance_profile=ec2_profile.id,
             security_groups=[secgroup_ecs.id],
             root_block_device={
-                "volume_type": "gp2",
+                "volume_type": "gp3",
                 "volume_size": 30,
                 "delete_on_termination": True
             },
